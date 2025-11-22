@@ -1,0 +1,10 @@
+WEATHER PIT STRATEGY PREDICTOR - TEST METRICS
+============================================================
+
+Accuracy:         0.9985
+Precision:        0.9985
+Recall:           0.9985
+F1-Score (Macro): 0.9325
+F1-Score (Weighted): 0.9984
+Cohen's Kappa:    0.8649
+ROC-AUC:          0.9959

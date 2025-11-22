@@ -1,0 +1,77 @@
+{
+  "model_type": "binary_classification",
+  "target": "PIT_DECISION",
+  "classes": [
+    "No Pit",
+    "Pit"
+  ],
+  "num_features": 22,
+  "feature_names": [
+    "TIRE_AGE",
+    "AIR_TEMP",
+    "TRACK_TEMP",
+    "HUMIDITY",
+    "WIND_SPEED",
+    "RAIN",
+    "TIRE_DEGRADATION",
+    "PACE_DROP",
+    "AVG_LAP_TIME",
+    "STD_LAP_TIME",
+    "MIN_LAP_TIME",
+    "AVG_S1",
+    "AVG_S2",
+    "AVG_S3",
+    "AVG_KPH",
+    "AVG_TOP_SPEED",
+    "TRACK_COTA",
+    "TRACK_Road America",
+    "TRACK_Sebring",
+    "TRACK_Sonoma",
+    "TRACK_VIR",
+    "TRACK_barber"
+  ],
+  "models": [
+    "rf",
+    "xgb",
+    "lgb",
+    "voting_ensemble"
+  ],
+  "cv_scores": {
+    "rf": {
+      "mean": 0.0,
+      "std": 0.0,
+      "scores": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "xgb": {
+      "mean": 0.1818181818181818,
+      "std": 0.1484539238050411,
+      "scores": [
+        0.0,
+        0.36363636363636365,
+        0.18181818181818182
+      ]
+    },
+    "lgb": {
+      "mean": 0.2333333333333333,
+      "std": 0.20548046676563259,
+      "scores": [
+        0.0,
+        0.5,
+        0.2
+      ]
+    },
+    "voting_ensemble": {
+      "mean": 0.2333333333333333,
+      "std": 0.20548046676563259,
+      "scores": [
+        0.0,
+        0.5,
+        0.2
+      ]
+    }
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "timestamp": "2025-11-10T13:18:32.253203",
+  "enhancement_summary": {
+    "percentile_outlier_filtering": true,
+    "weather_delta_features": true,
+    "driver_encoding": true,
+    "track_normalization": true,
+    "track_metadata_added": true,
+    "weather_balancing": true,
+    "feature_scaling": true,
+    "ensemble_weights_optimized": true,
+    "grouped_cv": true,
+    "diagnostics_generated": true
+  },
+  "outlier_removal_stats": {},
+  "ensemble_weights": {
+    "lightgbm": 0.46767498657989115,
+    "xgboost": 0.36637481020870766,
+    "catboost": 0.16595020321140114
+  },
+  "feature_importance_top10": {
+    "lightgbm": {
+      "PERF_VS_TRACK_RECORD": 1056,
+      "LAP_TIME_NORMALIZED": 951,
+      "KPH": 795,
+      "AVG_SPEED_TRACK_NORM": 738,
+      "S3_SECONDS_NORMALIZED": 690,
+      "GAP_TO_BEST": 587,
+      "CUMULATIVE_DEGRADATION": 563,
+      "S2_SECONDS_NORMALIZED": 541,
+      "S2_RATIO": 530,
+      "DEGRADATION_RATE": 529
+    },
+    "xgboost": {
+      "GAP_TO_BEST": 0.46530070900917053,
+      "DRIVER_PERFORMANCE_INDEX": 0.311028391122818,
+      "PERF_VS_TRACK_RECORD": 0.10848076641559601,
+      "LAP_TIME_NORMALIZED": 0.039211634546518326,
+      "GAP_TO_AVG_TOP10": 0.022186817601323128,
+      "AIR_TEMP": 0.013618022203445435,
+      "KPH": 0.01228453777730465,
+      "AVG_SPEED_TRACK_NORM": 0.008431593887507915,
+      "TOP_SPEED": 0.004922024440020323,
+      "TRACK_TEMP": 0.0036525388713926077
+    },
+    "catboost": {
+      "LAP_TIME_NORMALIZED": 24.678695471284556,
+      "AVG_SECTOR_SPEED": 19.09595309563441,
+      "KPH": 18.731968970071758,
+      "PERF_VS_TRACK_RECORD": 15.060746276371672,
+      "AVG_SPEED_TRACK_NORM": 10.023748413879163,
+      "GAP_TO_BEST": 3.4587412337453305,
+      "ROLLING_STD_LAP_5": 2.8343807750031367,
+      "S2_RATIO": 2.5055418502105598,
+      "TEMP_DIFFERENTIAL": 1.11986431375189,
+      "GAP_TO_AVG_TOP10": 0.6504092654103969
+    }
+  },
+  "track_wise_performance": {
+    "lightgbm": {
+      "Sebring": {
+        "mae": 0.013473744488900869,
+        "rmse": 0.030960611065078105,
+        "r2": 0.9998499961452384,
+        "samples": 105
+      },
+      "Sonoma": {
+        "mae": 0.03222514656939391,
+        "rmse": 0.11289942376769864,
+        "r2": 0.9990347193714342,
+        "samples": 202
+      }
+    },
+    "xgboost": {
+      "Sebring": {
+        "mae": 0.01094396154649067,
+        "rmse": 0.05100059983613909,
+        "r2": 0.999592962951754,
+        "samples": 105
+      },
+      "Sonoma": {
+        "mae": 0.020451872592612844,
+        "rmse": 0.09501652762313269,
+        "r2": 0.9993162954811415,
+        "samples": 202
+      }
+    },
+    "catboost": {
+      "Sebring": {
+        "mae": 0.025743874724510063,
+        "rmse": 0.06373522203098166,
+        "r2": 0.9993643143930593,
+        "samples": 105
+      },
+      "Sonoma": {
+        "mae": 0.03386187671455736,
+        "rmse": 0.08200824519117772,
+        "r2": 0.9994906865114341,
+        "samples": 202
+      }
+    },
+    "ensemble": {
+      "Sebring": {
+        "mae": 0.010380592566848505,
+        "rmse": 0.039361187420829814,
+        "r2": 0.9997575513584518,
+        "samples": 105
+      },
+      "Sonoma": {
+        "mae": 0.017675310050276873,
+        "rmse": 0.06391757390310741,
+        "r2": 0.9996906068425103,
+        "samples": 202
+      }
+    }
+  },
+  "overall_metrics": {
+    "lightgbm": {
+      "MAE": 0.025811800580951665,
+      "RMSE": 0.09335228499843573,
+      "R\u00b2": 0.9992091277646207,
+      "MAPE": 4.871016571220296
+    },
+    "xgboost": {
+      "MAE": 0.01719998119247334,
+      "RMSE": 0.08264353439514,
+      "R\u00b2": 0.9993801677221331,
+      "MAPE": 1.9447868971005569
+    },
+    "catboost": {
+      "MAE": 0.031085361375941836,
+      "RMSE": 0.07625283474832047,
+      "R\u00b2": 0.9994723227010802,
+      "MAPE": 7.432672816463882
+    },
+    "ensemble": {
+      "MAE": 0.015180374103175964,
+      "RMSE": 0.05672779125002921,
+      "R\u00b2": 0.9997079560778624,
+      "MAPE": 2.2151472641945733
+    }
+  },
+  "best_hyperparameters": {
+    "lightgbm": {
+      "num_leaves": 66,
+      "learning_rate": 0.026000059117302653,
+      "feature_fraction": 0.7713480415791243,
+      "bagging_fraction": 0.5704621124873813,
+      "bagging_freq": 6,
+      "min_child_samples": 12,
+      "max_depth": 12,
+      "reg_alpha": 0.08916674715636552,
+      "reg_lambda": 6.143857495033091e-07,
+      "objective": "regression",
+      "metric": "mae",
+      "verbosity": -1
+    },
+    "xgboost": {
+      "max_depth": 12,
+      "learning_rate": 0.013828161926216623,
+      "subsample": 0.8288532787998742,
+      "colsample_bytree": 0.6707744594084097,
+      "min_child_weight": 3,
+      "gamma": 2.2506141989111522e-06,
+      "reg_alpha": 1.128816510071303e-08,
+      "reg_lambda": 0.0015692601053016089,
+      "objective": "reg:squarederror",
+      "eval_metric": "mae",
+      "verbosity": 0
+    },
+    "catboost": {
+      "depth": 5,
+      "learning_rate": 0.028145092716060652,
+      "l2_leaf_reg": 0.00052821153945323,
+      "bagging_temperature": 0.43194501864211576,
+      "random_strength": 4.17890272377219e-06,
+      "loss_function": "MAE",
+      "verbose": false
+    }
+  },
+  "total_features": 114
+}

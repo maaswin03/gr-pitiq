@@ -1,0 +1,195 @@
+{
+  "timestamp": "2025-11-10T17:43:38.803382",
+  "feature_names": [
+    "NUMBER",
+    "LAP_NUMBER",
+    "LAP_IMPROVEMENT",
+    "S1_IMPROVEMENT",
+    "S2_IMPROVEMENT",
+    "S3_IMPROVEMENT",
+    "KPH",
+    "TOP_SPEED",
+    "RACE",
+    "AIR_TEMP",
+    "TRACK_TEMP",
+    "HUMIDITY",
+    "RAIN",
+    "WIND_SPEED",
+    "BEST_LAP_SECONDS",
+    "AVG_TOP10_SECONDS",
+    "TOTAL_DRIVER_LAPS",
+    "INT-1_time",
+    "INT-1_elapsed",
+    "INT-2_time",
+    "DELTA_TRACK_TEMP",
+    "DELTA_AIR_TEMP",
+    "DELTA_HUMIDITY",
+    "DELTA_RAIN",
+    "RAIN_START",
+    "RAIN_STOP",
+    "DELTA_WIND_SPEED",
+    "WEATHER_VOLATILITY",
+    "DRIVER_ID",
+    "DRIVER_AVG_LAPTIME",
+    "DRIVER_STD_LAPTIME",
+    "DRIVER_BEST_LAPTIME",
+    "DRIVER_AVG_BEST",
+    "DRIVER_PACE_VS_TRACK",
+    "DRIVER_CONSISTENCY",
+    "TRACK_AVG_LAPTIME",
+    "LAP_TIME_NORMALIZED",
+    "S1_SECONDS_NORMALIZED",
+    "S2_SECONDS_NORMALIZED",
+    "S3_SECONDS_NORMALIZED",
+    "TRACK_LENGTH_FACTOR",
+    "PERF_VS_TRACK_RECORD",
+    "TRACK_LENGTH_KM",
+    "TRACK_COMPLEXITY",
+    "TRACK_CATEGORY",
+    "TURNS_PER_KM",
+    "TRACK_DIFFICULTY",
+    "S1_ROLLING_MEAN_3",
+    "S2_ROLLING_MEAN_3",
+    "S3_ROLLING_MEAN_3",
+    "SECTOR_VARIANCE",
+    "SECTOR_STD",
+    "S1_RATIO",
+    "S2_RATIO",
+    "S3_RATIO",
+    "SECTOR_BALANCE",
+    "TOTAL_SECTOR_IMPROVEMENT",
+    "TIRE_AGE",
+    "DEGRADATION_RATE",
+    "CUMULATIVE_DEGRADATION",
+    "DEGRADATION_IMPACT",
+    "TIRE_CONDITION",
+    "TIRE_TEMP_EFFECT",
+    "WEATHER_INDEX",
+    "GRIP_ESTIMATE",
+    "TEMP_DIFFERENTIAL",
+    "WIND_IMPACT",
+    "DRIVER_PERFORMANCE_INDEX",
+    "GAP_TO_BEST",
+    "GAP_TO_AVG_TOP10",
+    "CONSISTENCY_SCORE",
+    "CURRENT_FORM",
+    "LAP_PROGRESS",
+    "RACE_PHASE",
+    "LAPS_REMAINING",
+    "FRESH_TIRES",
+    "OLD_TIRES",
+    "AVG_SPEED_TRACK_NORM",
+    "TOP_SPEED_TRACK_NORM",
+    "AVG_SECTOR_SPEED",
+    "SPEED_EFFICIENCY",
+    "SPEED_TO_TIME_RATIO",
+    "ACCELERATION_ESTIMATE",
+    "TRACK_ID",
+    "TRACK_ENCODED",
+    "TRACK_DIFFICULTY_NORM",
+    "ROLLING_AVG_LAP_3",
+    "ROLLING_AVG_LAP_5",
+    "ROLLING_STD_LAP_5",
+    "ROLLING_MIN_LAP_5",
+    "LAP_TREND",
+    "CONSECUTIVE_IMPROVEMENTS",
+    "MOMENTUM_SCORE",
+    "PIT_PENALTY",
+    "LAPS_SINCE_PIT"
+  ],
+  "best_params": {},
+  "metrics": {
+    "lightgbm": {
+      "MAE": 0.008534699726226351,
+      "RMSE": 0.034480908743982915,
+      "R\u00b2": 0.9977186104172908,
+      "MAPE": 650140190763.4683,
+      "sector_metrics": {
+        "S1_SECONDS": {
+          "MAE": 0.011108098207484027,
+          "RMSE": 0.04412477200820375,
+          "R\u00b2": 0.9964004492525823
+        },
+        "S2_SECONDS": {
+          "MAE": 0.00822803652616299,
+          "RMSE": 0.03449772086923825,
+          "R\u00b2": 0.9978148961115482
+        },
+        "S3_SECONDS": {
+          "MAE": 0.00626796444503204,
+          "RMSE": 0.02072947065134069,
+          "R\u00b2": 0.998940485887742
+        }
+      }
+    },
+    "xgboost": {
+      "MAE": 0.009656167589128017,
+      "RMSE": 0.03532396320622647,
+      "R\u00b2": 0.9975931644439697,
+      "MAPE": 130756403200.0,
+      "sector_metrics": {
+        "S1_SECONDS": {
+          "MAE": 0.011496559868808239,
+          "RMSE": 0.0380255669152928,
+          "R\u00b2": 0.9973267797206002
+        },
+        "S2_SECONDS": {
+          "MAE": 0.010072892062322043,
+          "RMSE": 0.04212518971326152,
+          "R\u00b2": 0.9967418203888907
+        },
+        "S3_SECONDS": {
+          "MAE": 0.007399046851493203,
+          "RMSE": 0.022866384017331112,
+          "R\u00b2": 0.9987107851271748
+        }
+      }
+    },
+    "catboost": {
+      "MAE": 0.012571021401178467,
+      "RMSE": 0.032704088342387444,
+      "R\u00b2": 0.9979325668568458,
+      "MAPE": 132010047631.78854,
+      "sector_metrics": {
+        "S1_SECONDS": {
+          "MAE": 0.015427680344559165,
+          "RMSE": 0.04213754731331221,
+          "R\u00b2": 0.9967173705740415
+        },
+        "S2_SECONDS": {
+          "MAE": 0.012493659280332782,
+          "RMSE": 0.031225405098680117,
+          "R\u00b2": 0.9982097757123618
+        },
+        "S3_SECONDS": {
+          "MAE": 0.009791724578643456,
+          "RMSE": 0.021402648568851077,
+          "R\u00b2": 0.9988705542841341
+        }
+      }
+    },
+    "ensemble": {
+      "MAE": 0.008793859964819137,
+      "RMSE": 0.0269056558278908,
+      "R\u00b2": 0.998607084729718,
+      "MAPE": 68921645949.74828,
+      "sector_metrics": {
+        "S1_SECONDS": {
+          "MAE": 0.011770056637446536,
+          "RMSE": 0.030587791111614374,
+          "R\u00b2": 0.998270264959773
+        },
+        "S2_SECONDS": {
+          "MAE": 0.00830519753060021,
+          "RMSE": 0.03084160938715761,
+          "R\u00b2": 0.9982535130411577
+        },
+        "S3_SECONDS": {
+          "MAE": 0.0063063257264106675,
+          "RMSE": 0.016879724876578392,
+          "R\u00b2": 0.9992974761882235
+        }
+      }
+    }
+  }
+}

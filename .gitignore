@@ -1,10 +1,26 @@
-# Ignore everything
-*
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pkl
+.venv/
+env/
+*.log
 
-# Unignore frontend folder AND all files in it
-!frontend/
-!frontend/**
+# macOS
+.DS_Store
 
-# Keep gitignore itself
-!.gitignore
-s
+# VSCode
+.vscode/
+
+# Environment
+.env.*
+
+
+# Node/Next.js
+node_modules/
+frontend/node_modules/
+frontend/.next/
+frontend/.turbo/
+frontend/.env*

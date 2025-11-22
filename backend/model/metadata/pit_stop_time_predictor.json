@@ -1,0 +1,88 @@
+{
+  "timestamp": "2025-11-10T20:07:52.821263",
+  "feature_names": [
+    "RACE_SESSION",
+    "LAP_NUMBER",
+    "LAPS_BEFORE_PIT",
+    "AVG_LAP_TIME_BEFORE",
+    "STD_LAP_TIME_BEFORE",
+    "LAST_LAP_TIME",
+    "TRACK_FACTOR",
+    "LAP_PROGRESS",
+    "AIR_TEMP",
+    "TRACK_TEMP",
+    "RAIN",
+    "AVG_SPEED_BEFORE",
+    "AVG_TOP_SPEED_BEFORE",
+    "TRACK_COTA",
+    "TRACK_Road America",
+    "TRACK_Sebring",
+    "TRACK_Sonoma",
+    "TRACK_VIR",
+    "TRACK_barber"
+  ],
+  "best_params": {
+    "lightgbm": {
+      "num_leaves": 85,
+      "learning_rate": 0.043949097468045664,
+      "feature_fraction": 0.6694908073548923,
+      "bagging_fraction": 0.8129989624132342,
+      "bagging_freq": 2,
+      "min_child_samples": 6,
+      "max_depth": 8,
+      "reg_alpha": 0.0021118373797918487,
+      "reg_lambda": 1.314053143275926e-08,
+      "objective": "regression",
+      "metric": "mae",
+      "verbosity": -1
+    },
+    "xgboost": {
+      "max_depth": 4,
+      "learning_rate": 0.05388108577817234,
+      "subsample": 0.5171942605576092,
+      "colsample_bytree": 0.954660201039391,
+      "min_child_weight": 3,
+      "gamma": 0.0019960815242513743,
+      "reg_alpha": 6.388511557344611e-06,
+      "reg_lambda": 0.0004793052550782129,
+      "objective": "reg:squarederror",
+      "eval_metric": "mae",
+      "verbosity": 0
+    },
+    "catboost": {
+      "depth": 7,
+      "learning_rate": 0.14728562654282598,
+      "l2_leaf_reg": 0.017897215654403328,
+      "bagging_temperature": 0.3026047451950726,
+      "random_strength": 1.3449336957629834e-05,
+      "loss_function": "MAE",
+      "verbose": false
+    }
+  },
+  "metrics": {
+    "lightgbm": {
+      "MAE": 1.3300156625474415,
+      "RMSE": 1.6853754701151493,
+      "R\u00b2": -0.6272703493510965,
+      "MAPE": 7.846584651865064
+    },
+    "xgboost": {
+      "MAE": 1.207346472385074,
+      "RMSE": 1.468560955103835,
+      "R\u00b2": -0.23552156077910102,
+      "MAPE": 7.150184685704007
+    },
+    "catboost": {
+      "MAE": 1.4124766548978287,
+      "RMSE": 1.70538483397812,
+      "R\u00b2": -0.6661387567221673,
+      "MAPE": 8.35762615993583
+    },
+    "ensemble": {
+      "MAE": 1.6634230235145318,
+      "RMSE": 1.9716251667300888,
+      "R\u00b2": -1.2269736579524126,
+      "MAPE": 9.876402079412875
+    }
+  }
+}

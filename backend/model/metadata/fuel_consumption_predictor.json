@@ -1,0 +1,92 @@
+{
+  "timestamp": "2025-11-10T20:07:24.741193",
+  "feature_names": [
+    "RACE_SESSION",
+    "LAP_NUMBER",
+    "LAP_TIME",
+    "AVG_LAP_TIME",
+    "STD_LAP_TIME",
+    "MIN_LAP_TIME",
+    "AVG_S1",
+    "AVG_S2",
+    "AVG_S3",
+    "AVG_KPH",
+    "AVG_TOP_SPEED",
+    "AIR_TEMP",
+    "TRACK_TEMP",
+    "HUMIDITY",
+    "WIND_SPEED",
+    "RAIN",
+    "LAP_COUNT",
+    "TRACK_COTA",
+    "TRACK_Road America",
+    "TRACK_Sebring",
+    "TRACK_Sonoma",
+    "TRACK_VIR",
+    "TRACK_barber"
+  ],
+  "best_params": {
+    "lightgbm": {
+      "num_leaves": 45,
+      "learning_rate": 0.21227334472098044,
+      "feature_fraction": 0.9087109959627296,
+      "bagging_fraction": 0.7381859778397436,
+      "bagging_freq": 1,
+      "min_child_samples": 21,
+      "max_depth": 5,
+      "reg_alpha": 0.00012104443336685521,
+      "reg_lambda": 5.248536280640831,
+      "objective": "regression",
+      "metric": "mae",
+      "verbosity": -1
+    },
+    "xgboost": {
+      "max_depth": 4,
+      "learning_rate": 0.013300161113611177,
+      "subsample": 0.765195531785554,
+      "colsample_bytree": 0.7423400373823003,
+      "min_child_weight": 2,
+      "gamma": 3.378812352411673e-07,
+      "reg_alpha": 1.952114881658246,
+      "reg_lambda": 9.879192474391198,
+      "objective": "reg:squarederror",
+      "eval_metric": "mae",
+      "verbosity": 0
+    },
+    "catboost": {
+      "depth": 7,
+      "learning_rate": 0.010406755076983576,
+      "l2_leaf_reg": 9.134446879231278e-07,
+      "bagging_temperature": 0.8224640506009631,
+      "random_strength": 0.11101214850658228,
+      "loss_function": "MAE",
+      "verbose": false
+    }
+  },
+  "metrics": {
+    "lightgbm": {
+      "MAE": 0.11771642179189278,
+      "RMSE": 0.15026831464507878,
+      "R\u00b2": 0.972131386089431,
+      "MAPE": 5.717537672610632
+    },
+    "xgboost": {
+      "MAE": 0.11644923197923161,
+      "RMSE": 0.15027099519787895,
+      "R\u00b2": 0.9721303918151885,
+      "MAPE": 5.6668814133037575
+    },
+    "catboost": {
+      "MAE": 0.11522831285610204,
+      "RMSE": 0.14878814078626737,
+      "R\u00b2": 0.9726777052712209,
+      "MAPE": 5.598097922021722
+    },
+    "ensemble": {
+      "MAE": 0.11505299823295978,
+      "RMSE": 0.14843041999365297,
+      "R\u00b2": 0.972808925457235,
+      "MAPE": 5.606084554088255
+    }
+  }
+}

@@ -1,0 +1,7 @@
+FUEL CONSUMPTION PREDICTOR - TEST METRICS
+============================================================
+
+R² Score:  0.9749
+RMSE:      0.1414 L/lap
+MAE:       0.1096 L/lap
+MSE:       0.0200

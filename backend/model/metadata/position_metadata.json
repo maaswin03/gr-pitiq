@@ -1,0 +1,113 @@
+{
+  "created_at": "2025-11-10T18:27:33.000038",
+  "model_type": "position_classification",
+  "base_models": [
+    "rf",
+    "xgb",
+    "lgb",
+    "voting_ensemble"
+  ],
+  "num_features": 26,
+  "num_positions": 33,
+  "positions": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33
+  ],
+  "cv_scores": {
+    "rf": {
+      "mean": 0.15124548985457398,
+      "std": 0.007914790450998906,
+      "scores": [
+        0.1431107208880172,
+        0.14865442014634556,
+        0.1619713285293591
+      ]
+    },
+    "xgb": {
+      "mean": 1.0,
+      "std": 0.0,
+      "scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "lgb": {
+      "mean": 0.7195571810399501,
+      "std": 0.39660603804344513,
+      "scores": [
+        0.15867154311985018,
+        1.0,
+        1.0
+      ]
+    },
+    "voting_ensemble": {
+      "mean": 0.8988291701666666,
+      "std": 0.14307715966684054,
+      "scores": [
+        0.6964875105,
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "feature_names": [
+    "LAP_NUMBER",
+    "POSITION_GAIN",
+    "AVG_LAP_TIME",
+    "STD_LAP_TIME",
+    "MIN_LAP_TIME",
+    "LAP_TIME_CONSISTENCY",
+    "AVG_SECTOR_1",
+    "AVG_SECTOR_2",
+    "AVG_SECTOR_3",
+    "AVG_KPH",
+    "AVG_TOP_SPEED",
+    "TIRE_DEGRADATION",
+    "COMPLETION_RATE",
+    "BEST_LAP_GAP",
+    "NUM_PIT_STOPS",
+    "FUEL_ADJUSTED_PACE",
+    "TOTAL_LAPS",
+    "TIRE_DEG_RATE",
+    "PACE_ADVANTAGE",
+    "SECTOR_BALANCE",
+    "TRACK_COTA",
+    "TRACK_Road America",
+    "TRACK_Sebring",
+    "TRACK_Sonoma",
+    "TRACK_VIR",
+    "TRACK_barber"
+  ]
+}
