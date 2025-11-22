@@ -1,4 +1,4 @@
-name: Build and deploy Python app to Azure Web App - grpitiq-backend
+name: build-and-deploy
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out code
+    - name: Checkout code
       uses: actions/checkout@v4
 
     - name: Set up Python
@@ -21,6 +21,7 @@ jobs:
 
     - name: Change to backend folder
       run: cd backend
+      shell: bash
 
     - name: Install dependencies
       run: |
@@ -35,10 +36,16 @@ jobs:
         name: python-app
         path: backend
 
+    # 🔥 IMPORTANT: Login to Azure
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # 🚀 Deploy to Azure Web App
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
-        app-name: grpitiq-backend
-        slot-name: production
-        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+        app-name: 'grpitiq-backend'
+        slot-name: 'production'
         package: backend
