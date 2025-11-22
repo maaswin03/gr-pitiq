@@ -4,6 +4,9 @@
 import multiprocessing
 import os
 
+# --- FIX: Ensure logs directory exists ---
+os.makedirs("logs", exist_ok=True)
+
 # Server socket
 bind = f"0.0.0.0:{os.getenv('PORT', '8000')}"
 backlog = 2048
@@ -35,10 +38,6 @@ umask = 0
 user = None
 group = None
 tmp_upload_dir = None
-
-# SSL (if needed)
-# keyfile = 'path/to/keyfile'
-# certfile = 'path/to/certfile'
 
 # Security
 limit_request_line = 4094
