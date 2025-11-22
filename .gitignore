@@ -1,6 +1,10 @@
 # Ignore everything
 *
 
-# Allow frontend
+# Unignore frontend folder AND all files in it
 !frontend/
+!frontend/**
+
+# Keep gitignore itself
 !.gitignore
+s
