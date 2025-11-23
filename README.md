@@ -219,9 +219,8 @@ MIT License - See [LICENSE](LICENSE) for details
 
 ## 👥 Team
 
-- **Developer**: [Your Name]
+- **Developer**: Aswin M A
 - **GitHub**: [@maaswin03](https://github.com/maaswin03)
-- **Contact**: [Your Email]
 
 ---
 
@@ -237,9 +236,8 @@ MIT License - See [LICENSE](LICENSE) for details
 
 ## 🔗 Links
 
-- **Live Demo**: [Deployment URL]
-- **Video Demo**: [YouTube/Loom URL]
-- **Presentation**: [Slides URL]
+- **Live Demo**: https://www.grpitiq.dev
+- **Video Demo**: https://youtu.be/2LKJSUoxSuc?si=Ip4VGadG8WWdRC2p
 - **GitHub**: https://github.com/maaswin03/gr-pitiq
 
 ---
