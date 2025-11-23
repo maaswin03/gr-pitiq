@@ -253,10 +253,10 @@ SECRET_KEY=your-secret-key
 HOST=0.0.0.0
 PORT=8000
 
-CORS_ORIGINS=http://localhost:3000
+CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 
-SUPABASE_URL=https://your.supabase.co
-SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_URL=https://wzuoyhjtgveivntpvtlx.supabase.co
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6dW95aGp0Z3ZlaXZudHB2dGx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyMTU2MDIsImV4cCI6MjA3ODc5MTYwMn0.N37Leo9ouf5MDjFBIy5NgWNRJUUJhDeI-wRAj3X_i6Q
 SUPABASE_SERVICE_ROLE_KEY=optional
 ```
 
@@ -267,13 +267,14 @@ SUPABASE_SERVICE_ROLE_KEY=optional
 Create: `frontend/.env.local`
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://your.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_SUPABASE_URL=https://wzuoyhjtgveivntpvtlx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6dW95aGp0Z3ZlaXZudHB2dGx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyMTU2MDIsImV4cCI6MjA3ODc5MTYwMn0.N37Leo9ouf5MDjFBIy5NgWNRJUUJhDeI-wRAj3X_i6Q
+
 
 NEXT_PUBLIC_API_URL=http://localhost:8000/api/simulation
 
 GEMINI_API_KEY=your-key
-GROQ_API_KEY=your-key
+GROQ_API_KEY=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
 DEEPSEEK_API_KEY=your-key
 ```
 
