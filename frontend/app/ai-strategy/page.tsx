@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
-import { useBackendSimulation } from "@/hooks/useBackendSimulation";
+import { useSimulation } from "@/contexts/SimulationContext";
 import Sidebar from "@/components/Sidebar";
 import LoadingScreen from "@/components/ui/loading-screen";
 import {
@@ -49,16 +49,14 @@ export default function AIStrategyPage() {
   const [loadingPredictions, setLoadingPredictions] = useState(false);
 
   // Get user ID from localStorage (auth_token)
-  const userId =
-    typeof window !== "undefined"
-      ? localStorage.getItem("auth_token") || ""
-      : "";
+  const userId = typeof window !== 'undefined' ? (localStorage.getItem('auth_token') || '') : '';
 
+  // Use centralized simulation context (no polling overhead)
   const {
     state: backendState,
     isActive,
     loading: isCheckingSimulation,
-  } = useBackendSimulation(userId, "COTA", (() => ({}))() as any, { pollInterval: 2000 });
+  } = useSimulation();
 
   // Redirect to login if no user (only after auth check completes)
   useEffect(() => {

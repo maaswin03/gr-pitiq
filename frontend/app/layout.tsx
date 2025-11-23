@@ -32,6 +32,7 @@ export const metadata: Metadata = {
 
 
 import { AuthProvider } from '@/contexts/AuthContext';
+import { SimulationProvider } from '@/contexts/SimulationContext';
 
 export default function RootLayout({
   children,
@@ -44,7 +45,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${rajdhani.variable} ${orbitron.variable} antialiased m-0 p-0`}
       >
         <AuthProvider>
-          {children}
+          <SimulationProvider>
+            {children}
+          </SimulationProvider>
         </AuthProvider>
       </body>
     </html>

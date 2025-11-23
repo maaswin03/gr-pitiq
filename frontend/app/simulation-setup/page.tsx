@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { 
@@ -19,7 +19,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { AlertDialog } from '@/components/ui/alert-dialog';
-import { useBackendSimulation, type SimulationConfig } from '@/hooks/useBackendSimulation';
+import { useSimulation, type SimulationConfig } from '@/contexts/SimulationContext';
 import { TRACK_DATA, type TrackName } from '@/lib/track-data';
 import LoadingScreen from '@/components/ui/loading-screen';
 import { useAuth } from '@/contexts/AuthContext';
@@ -27,9 +27,6 @@ import { useAuth } from '@/contexts/AuthContext';
 export default function SimulationSetupPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
-  
-  // Get user ID from localStorage (auth_token)
-  const userId = typeof window !== 'undefined' ? (localStorage.getItem('auth_token') || '') : '';
   
   // Redirect to login if no user (only after auth check completes)
   useEffect(() => {
@@ -75,6 +72,9 @@ export default function SimulationSetupPage() {
     realTimeSpeed: 135
   });
 
+  // Get user ID from localStorage (auth_token)
+  const userId = typeof window !== 'undefined' ? (localStorage.getItem('auth_token') || '') : '';
+
   const {
     state: backendState,
     laps: completedLaps,
@@ -88,14 +88,11 @@ export default function SimulationSetupPage() {
     resumeSimulation: backendResume,
     isPaused,
     pauseReason,
-  } = useBackendSimulation(userId, selectedTrack, config, {
-    pollInterval: 2000,
-    onShowAlert: (alertData) => setAlertConfig({ ...alertData, isOpen: true })
-  });
+  } = useSimulation();
 
   const isSimulating = isActive;
 
-  const simulationState = backendState ? {
+  const simulationState = useMemo(() => backendState ? {
     isRunning: backendState.is_active,
     currentLap: backendState.current_lap,
     currentSector: backendState.current_sector,
@@ -112,13 +109,18 @@ export default function SimulationSetupPage() {
     humidity: backendState.raw_telemetry?.HUMIDITY || config.humidity,
     windSpeed: backendState.raw_telemetry?.WIND_SPEED || config.windSpeed,
     rainfall: backendState.raw_telemetry?.RAIN === 1 ? 100 : 0,
-  } : null;
+  } : null, [backendState, config.fuelLoad, config.airTemp, config.trackTemp, config.humidity, config.windSpeed, trackData.length]);
 
   const handleStartSimulation = async () => {
     setPitStopMessage(null); // Clear any previous messages
     
     // Disable button during start to prevent double-click
-    await backendStart();
+    await backendStart(
+      userId,
+      selectedTrack,
+      config,
+      (alertData) => setAlertConfig({ ...alertData, isOpen: true })
+    );
     
     // If start was successful and we're now active, show success message
     if (isActive && !simError) {
@@ -132,13 +134,13 @@ export default function SimulationSetupPage() {
   };
 
   const handleConfirmStop = async () => {
-    await backendStop();
+    await backendStop(userId);
     setShowStopDialog(false);
     setPitStopMessage(null); // Clear pit stop message when stopping
   };
 
   const handlePitStop = async () => {
-    const result = await backendPitStop();
+    const result = await backendPitStop(userId);
     if (result.success) {
       setPitStopMessage(
         `PIT STOP PAUSED • Change tire compound if needed, then click RESUME`
@@ -147,7 +149,7 @@ export default function SimulationSetupPage() {
   };
 
   const handleResume = async () => {
-    const result = await backendResume();
+    const result = await backendResume(userId);
     if (result.success) {
       setPitStopMessage(
         `SIMULATION RESUMED • ${result.timePenaltyApplied?.toFixed(1)}s penalty applied • ` +
@@ -160,13 +162,13 @@ export default function SimulationSetupPage() {
   // Auto-stop simulation when fuel depletes to 0
   useEffect(() => {
     if (isSimulating && simulationState && simulationState.currentFuel <= 0) {
-      backendStop();
+      backendStop(userId);
       setPitStopMessage("🛑 OUT OF FUEL - Simulation stopped at Lap " + simulationState.currentLap);
     } else if (simulationState && simulationState.currentFuel > 0 && pitStopMessage?.includes('OUT OF FUEL')) {
       // Clear out-of-fuel message when fuel is restored
       setPitStopMessage(null);
     }
-  }, [isSimulating, simulationState?.currentFuel, simulationState?.currentLap, pitStopMessage]);
+  }, [isSimulating, simulationState, pitStopMessage, backendStop, userId]);
 
   const updateConfig = async <K extends keyof SimulationConfig>(key: K, value: SimulationConfig[K]) => {
     if (isSimulating) {
@@ -201,7 +203,7 @@ export default function SimulationSetupPage() {
     setConfig(newConfig);
     
     if (isSimulating) {
-      await backendUpdate(newConfig);
+      await backendUpdate(userId, newConfig);
     }
   };
 

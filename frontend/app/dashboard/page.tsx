@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
-import { useBackendSimulation } from "@/hooks/useBackendSimulation";
+import { useSimulation } from "@/contexts/SimulationContext";
 import Sidebar from "@/components/Sidebar";
 import TrackProgress from "@/components/dashboard/TrackProgress";
 import StatsGrid from "@/components/dashboard/StatsGrid";
@@ -19,34 +19,13 @@ export default function DashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [tireVariations] = useState([2, -3, 1, -2]);
   
-  // Get user ID from localStorage (auth_token)
-  const userId = typeof window !== 'undefined' ? (localStorage.getItem('auth_token') || '') : '';
-
+  // Use centralized simulation context (no polling overhead)
   const {
     state: backendState,
     laps: completedLaps,
     isActive,
     loading: isCheckingSimulation,
-  } = useBackendSimulation(
-    userId,
-    "COTA",
-    {
-      driverSkill: "Pro",
-      enginePower: 100,
-      downforceLevel: 50,
-      tireCompound: "Soft",
-      fuelLoad: 50,
-      rainfall: 0,
-      airTemp: 25,
-      trackTemp: 40,
-      humidity: 50,
-      windSpeed: 10,
-      simulationMode: "Multi-Lap",
-      lapCount: 20,
-      realTimeSpeed: 135,
-    },
-    { pollInterval: 2000 }
-  );
+  } = useSimulation();
 
   const isRunning = isActive;
   const currentLap = backendState?.current_lap || 0;

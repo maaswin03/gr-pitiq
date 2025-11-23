@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Loader2, Play, ExternalLink, Fuel, Gauge, AlertTriangle, Droplets, Thermometer, TrendingDown, Zap } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useBackendSimulation } from '@/hooks/useBackendSimulation';
+import { useSimulation } from '@/contexts/SimulationContext';
 import Sidebar from '@/components/Sidebar';
 import LoadingScreen from '@/components/ui/loading-screen';
 import PitWallOverview from '@/components/pit-wall/PitWallOverview';
@@ -31,16 +31,13 @@ export default function PitWallPage() {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [prevState, setPrevState] = useState<any>(null);
   
-  // Get user ID from localStorage (auth_token)
-  const userId = typeof window !== 'undefined' ? (localStorage.getItem('auth_token') || '') : '';
-  
-  // Call all hooks before any conditional returns
+  // Use centralized simulation context (no polling overhead)
   const {
     state: backendState,
     isActive,
     loading,
     laps: lapHistory,
-  } = useBackendSimulation(userId, 'COTA', (() => ({}))() as any, { pollInterval: 2000 });
+  } = useSimulation();
   
   // Redirect to login if no user
   useEffect(() => {

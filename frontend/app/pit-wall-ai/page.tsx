@@ -10,7 +10,7 @@ import Sidebar from '@/components/Sidebar';
 import LoadingScreen from '@/components/ui/loading-screen';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { useBackendSimulation } from '@/hooks/useBackendSimulation';
+import { useSimulation } from '@/contexts/SimulationContext';
 
 interface Message {
   id: string;
@@ -92,8 +92,8 @@ export default function PitWallAI() {
   const [selectedModel, setSelectedModel] = useState<string>('pitiq-lightning');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Get user ID from localStorage (auth_token)
-  const userId = typeof window !== 'undefined' ? (localStorage.getItem('auth_token') || '') : '';
+  // Use centralized simulation context (no polling overhead)
+  const { state: backendState, isActive } = useSimulation();
   
   // Redirect to login if no user
   useEffect(() => {
@@ -110,30 +110,6 @@ export default function PitWallAI() {
       router.replace('/login');
     }
   }, [authLoading, user, router]);
-  
-  const simulationConfig = {
-    driverSkill: 'Pro',
-    carNumber: 22,
-    enginePower: 100,
-    downforceLevel: 50,
-    tireCompound: 'Medium',
-    fuelLoad: 40,
-    airTemp: 25,
-    trackTemp: 35,
-    humidity: 60,
-    rainfall: 0,
-    windSpeed: 10,
-    simulationMode: 'Multi-Lap',
-    lapCount: 20,
-    realTimeSpeed: 1,
-  } as const;
-
-  const { state: backendState, isActive } = useBackendSimulation(
-    userId,
-    'COTA',
-    simulationConfig,
-    { pollInterval: 2000 }
-  );
 
   useEffect(() => {
     const fetchModels = async () => {
@@ -171,7 +147,7 @@ export default function PitWallAI() {
   useEffect(() => {
     if (isActive && backendState) {
       const rawTelemetry = backendState.raw_telemetry || {};
-      const derivedCarNumber = rawTelemetry.NUMBER || (backendState as any).carNumber || simulationConfig.carNumber;
+      const derivedCarNumber = rawTelemetry.NUMBER || (backendState as any).carNumber || 22;
       setRaceData({
         carNumber: String(derivedCarNumber ?? '0'),
         currentLap: backendState.current_lap || 0,
@@ -188,7 +164,7 @@ export default function PitWallAI() {
     } else {
       setRaceData(null);
     }
-  }, [isActive, backendState, simulationConfig.carNumber]);
+  }, [isActive, backendState]);
 
   const sendMessage = async (messageContent: string) => {
     if (!messageContent.trim() || isLoading) return;
@@ -324,11 +300,7 @@ export default function PitWallAI() {
                 </p>
                 <button
                   onClick={() => {
-                    const params = new URLSearchParams();
-                    Object.entries(simulationConfig).forEach(([key, value]) => {
-                      params.set(key, String(value));
-                    });
-                    window.open(`/simulation-setup?${params.toString()}`, '_blank');
+                    window.open('/simulation-setup', '_blank');
                   }}
                   className="px-8 py-4 bg-linear-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white rounded-lg text-lg font-bold transition-all shadow-lg shadow-orange-600/30 hover:shadow-orange-600/50 hover:scale-105 active:scale-95 flex items-center gap-3 mx-auto"
                 >
