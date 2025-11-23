@@ -246,7 +246,7 @@ MIT License - See [LICENSE](LICENSE) for details
 
 <div align="center">
 
-**Built with ❤️ for [Hackathon Name]**
+**Built with ❤️ for Hack the Track presented by Toyota GR**
 
 ⭐ Star this repo if you find it useful!
 
