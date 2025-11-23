@@ -282,14 +282,17 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                   const Icon = item.icon;
                   const isActive = pathname === item.href;
                   const isHovered = hoveredItem === item.href;
+                  const openInNewTab = item.href === '/simulation-setup';
 
                   return (
                     <Link
                       key={item.href}
                       href={item.href}
+                      target={openInNewTab ? '_blank' : undefined}
+                      rel={openInNewTab ? 'noopener noreferrer' : undefined}
                       onMouseEnter={() => setHoveredItem(item.href)}
                       onMouseLeave={() => setHoveredItem(null)}
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => !openInNewTab && setIsOpen(false)}
                     >
                       <motion.div
                         className={`

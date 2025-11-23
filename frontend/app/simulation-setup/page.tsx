@@ -49,6 +49,13 @@ export default function SimulationSetupPage() {
   const [selectedTrack, setSelectedTrack] = useState<TrackName>('COTA');
   const [showStopDialog, setShowStopDialog] = useState(false);
   const [pitStopMessage, setPitStopMessage] = useState<string | null>(null);
+  const [alertConfig, setAlertConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string[];
+    confirmText: string;
+    onConfirm: () => void;
+  }>({ isOpen: false, title: '', description: [], confirmText: 'OK', onConfirm: () => {} });
   
   const trackData = TRACK_DATA[selectedTrack];
   
@@ -74,14 +81,17 @@ export default function SimulationSetupPage() {
     error: simError,
     isActive,
     loading: isCheckingSimulation,
-    startSimulation: backendStart,
-    stopSimulation: backendStop,
-    updateSimulation: backendUpdate,
+    start: backendStart,
+    stop: backendStop,
+    update: backendUpdate,
     pitStop: backendPitStop,
     resumeSimulation: backendResume,
     isPaused,
     pauseReason,
-  } = useBackendSimulation(userId, selectedTrack, config, { pollInterval: 2000 });
+  } = useBackendSimulation(userId, selectedTrack, config, {
+    pollInterval: 2000,
+    onShowAlert: (alertData) => setAlertConfig({ ...alertData, isOpen: true })
+  });
 
   const isSimulating = isActive;
 
@@ -106,7 +116,15 @@ export default function SimulationSetupPage() {
 
   const handleStartSimulation = async () => {
     setPitStopMessage(null); // Clear any previous messages
+    
+    // Disable button during start to prevent double-click
     await backendStart();
+    
+    // If start was successful and we're now active, show success message
+    if (isActive && !simError) {
+      setPitStopMessage('✅ SIMULATION STARTED - View live data below or navigate to Dashboard');
+      setTimeout(() => setPitStopMessage(null), 8000);
+    }
   };
 
   const handlePauseSimulation = () => {
@@ -278,6 +296,7 @@ export default function SimulationSetupPage() {
 
   return (
     <div className="h-screen w-screen bg-black text-zinc-400 font-rajdhani overflow-hidden flex flex-col">
+      {/* Alert for stopping simulation */}
       <AlertDialog
         isOpen={showStopDialog}
         onClose={() => setShowStopDialog(false)}
@@ -290,6 +309,17 @@ export default function SimulationSetupPage() {
         ]}
         confirmText="STOP"
         cancelText="Cancel"
+      />
+      
+      {/* Alert for simulation status (already running or started successfully) */}
+      <AlertDialog
+        isOpen={alertConfig.isOpen}
+        onClose={() => setAlertConfig({ ...alertConfig, isOpen: false })}
+        onConfirm={alertConfig.onConfirm}
+        title={alertConfig.title}
+        description={alertConfig.description}
+        confirmText={alertConfig.confirmText}
+        cancelText="Stay Here"
       />
 
       <div className="border-b border-zinc-800 bg-gradient-to-r from-black via-zinc-950 to-black">
@@ -308,24 +338,28 @@ export default function SimulationSetupPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(234, 88, 12, 0.3)" }}
-              whileTap={{ scale: 0.95 }}
-              onClick={randomizeConditions}
-              className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 rounded-lg text-sm font-medium transition-all flex items-center gap-2 border border-zinc-800 hover:border-zinc-700"
-            >
-              <Shuffle className="w-4 h-4" />
-              RANDOMIZE
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(234, 88, 12, 0.3)" }}
-              whileTap={{ scale: 0.95 }}
-              onClick={resetParameters}
-              className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 rounded-lg text-sm font-medium transition-all flex items-center gap-2 border border-zinc-800 hover:border-zinc-700"
-            >
-              <RotateCcw className="w-4 h-4" />
-              RESET
-            </motion.button>
+            {!isSimulating && (
+              <>
+                <motion.button
+                  whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(234, 88, 12, 0.3)" }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={randomizeConditions}
+                  className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 rounded-lg text-sm font-medium transition-all flex items-center gap-2 border border-zinc-800 hover:border-zinc-700"
+                >
+                  <Shuffle className="w-4 h-4" />
+                  RANDOMIZE
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(234, 88, 12, 0.3)" }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={resetParameters}
+                  className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 rounded-lg text-sm font-medium transition-all flex items-center gap-2 border border-zinc-800 hover:border-zinc-700"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  RESET
+                </motion.button>
+              </>
+            )}
             {!isSimulating ? (
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(234, 88, 12, 0.5)" }}
