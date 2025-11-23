@@ -1,0 +1,230 @@
+{
+  "timestamp": "2025-11-10T20:07:52.799263",
+  "enhancement_summary": {
+    "percentile_outlier_filtering": true,
+    "weather_delta_features": true,
+    "driver_encoding": true,
+    "track_normalization": true,
+    "track_metadata_added": true,
+    "weather_balancing": true,
+    "feature_scaling": true,
+    "ensemble_weights_optimized": true,
+    "grouped_cv": true,
+    "diagnostics_generated": true
+  },
+  "outlier_removal_stats": {},
+  "ensemble_weights": {
+    "lightgbm": 0.38919747721334325,
+    "xgboost": 0.4984973233617122,
+    "catboost": 0.11230519942494446
+  },
+  "feature_importance_top10": {
+    "lightgbm": {
+      "LAP_PROGRESS": 60,
+      "TRACK_FACTOR": 59,
+      "LAST_LAP_TIME": 41,
+      "STD_LAP_TIME_BEFORE": 37,
+      "AVG_TOP_SPEED_BEFORE": 34,
+      "AVG_SPEED_BEFORE": 32,
+      "AVG_LAP_TIME_BEFORE": 29,
+      "LAP_NUMBER": 29,
+      "LAPS_BEFORE_PIT": 18,
+      "TRACK_TEMP": 9
+    },
+    "xgboost": {
+      "TRACK_FACTOR": 0.16670137643814087,
+      "LAPS_BEFORE_PIT": 0.11200408637523651,
+      "STD_LAP_TIME_BEFORE": 0.09957341104745865,
+      "TRACK_COTA": 0.0923963338136673,
+      "LAST_LAP_TIME": 0.09232532232999802,
+      "AVG_LAP_TIME_BEFORE": 0.08466421812772751,
+      "LAP_PROGRESS": 0.07189545035362244,
+      "AVG_SPEED_BEFORE": 0.06980212777853012,
+      "AVG_TOP_SPEED_BEFORE": 0.06312456727027893,
+      "LAP_NUMBER": 0.05915224179625511
+    },
+    "catboost": {
+      "LAP_PROGRESS": 24.020014167912084,
+      "AVG_SPEED_BEFORE": 17.805490711439603,
+      "AVG_LAP_TIME_BEFORE": 14.966010732784394,
+      "TRACK_FACTOR": 12.040003986958531,
+      "STD_LAP_TIME_BEFORE": 11.396067704655533,
+      "LAST_LAP_TIME": 6.607100928345428,
+      "AVG_TOP_SPEED_BEFORE": 5.125308918623325,
+      "LAPS_BEFORE_PIT": 2.6812136465573433,
+      "LAP_NUMBER": 2.5012555041823,
+      "AIR_TEMP": 2.1850448267607137
+    }
+  },
+  "track_wise_performance": {
+    "lightgbm": {
+      "Road America": {
+        "mae": 0.19536066804691288,
+        "rmse": 0.19536066804691288,
+        "r2": NaN,
+        "samples": 1
+      },
+      "Sebring": {
+        "mae": 1.5356016635445933,
+        "rmse": 1.5356016635445933,
+        "r2": NaN,
+        "samples": 1
+      },
+      "Sonoma": {
+        "mae": 2.8573457843990155,
+        "rmse": 2.8573457843990155,
+        "r2": NaN,
+        "samples": 1
+      },
+      "barber": {
+        "mae": 1.0308850983733429,
+        "rmse": 1.3494052736309092,
+        "r2": -6.492287262188628,
+        "samples": 2
+      }
+    },
+    "xgboost": {
+      "Road America": {
+        "mae": 0.54085888479975,
+        "rmse": 0.54085888479975,
+        "r2": NaN,
+        "samples": 1
+      },
+      "Sebring": {
+        "mae": 1.4186624331670714,
+        "rmse": 1.4186624331670714,
+        "r2": NaN,
+        "samples": 1
+      },
+      "Sonoma": {
+        "mae": 2.5131450914252227,
+        "rmse": 2.5131450914252227,
+        "r2": NaN,
+        "samples": 1
+      },
+      "barber": {
+        "mae": 0.7820329762666631,
+        "rmse": 1.0397900536109212,
+        "r2": -3.4485751513404326,
+        "samples": 2
+      }
+    },
+    "catboost": {
+      "Road America": {
+        "mae": 0.04193534012221889,
+        "rmse": 0.04193534012221889,
+        "r2": NaN,
+        "samples": 1
+      },
+      "Sebring": {
+        "mae": 1.4871284190575231,
+        "rmse": 1.4871284190575231,
+        "r2": NaN,
+        "samples": 1
+      },
+      "Sonoma": {
+        "mae": 2.272369071249649,
+        "rmse": 2.272369071249649,
+        "r2": NaN,
+        "samples": 1
+      },
+      "barber": {
+        "mae": 1.630475222029876,
+        "rmse": 1.8927118714058422,
+        "r2": -13.740038787501343,
+        "samples": 2
+      }
+    },
+    "ensemble": {
+      "Road America": {
+        "mae": 1.0148720484495257,
+        "rmse": 1.0148720484495257,
+        "r2": NaN,
+        "samples": 1
+      },
+      "Sebring": {
+        "mae": 1.949200978690694,
+        "rmse": 1.949200978690694,
+        "r2": NaN,
+        "samples": 1
+      },
+      "Sonoma": {
+        "mae": 3.4619970711066284,
+        "rmse": 3.4619970711066284,
+        "r2": NaN,
+        "samples": 1
+      },
+      "barber": {
+        "mae": 0.9455225096629052,
+        "rmse": 1.144935705621387,
+        "r2": -4.393762417080749,
+        "samples": 2
+      }
+    }
+  },
+  "overall_metrics": {
+    "lightgbm": {
+      "MAE": 1.3300156625474415,
+      "RMSE": 1.6853754701151493,
+      "R\u00b2": -0.6272703493510965,
+      "MAPE": 7.846584651865064
+    },
+    "xgboost": {
+      "MAE": 1.207346472385074,
+      "RMSE": 1.468560955103835,
+      "R\u00b2": -0.23552156077910102,
+      "MAPE": 7.150184685704007
+    },
+    "catboost": {
+      "MAE": 1.4124766548978287,
+      "RMSE": 1.70538483397812,
+      "R\u00b2": -0.6661387567221673,
+      "MAPE": 8.35762615993583
+    },
+    "ensemble": {
+      "MAE": 1.6634230235145318,
+      "RMSE": 1.9716251667300888,
+      "R\u00b2": -1.2269736579524126,
+      "MAPE": 9.876402079412875
+    }
+  },
+  "best_hyperparameters": {
+    "lightgbm": {
+      "num_leaves": 85,
+      "learning_rate": 0.043949097468045664,
+      "feature_fraction": 0.6694908073548923,
+      "bagging_fraction": 0.8129989624132342,
+      "bagging_freq": 2,
+      "min_child_samples": 6,
+      "max_depth": 8,
+      "reg_alpha": 0.0021118373797918487,
+      "reg_lambda": 1.314053143275926e-08,
+      "objective": "regression",
+      "metric": "mae",
+      "verbosity": -1
+    },
+    "xgboost": {
+      "max_depth": 4,
+      "learning_rate": 0.05388108577817234,
+      "subsample": 0.5171942605576092,
+      "colsample_bytree": 0.954660201039391,
+      "min_child_weight": 3,
+      "gamma": 0.0019960815242513743,
+      "reg_alpha": 6.388511557344611e-06,
+      "reg_lambda": 0.0004793052550782129,
+      "objective": "reg:squarederror",
+      "eval_metric": "mae",
+      "verbosity": 0
+    },
+    "catboost": {
+      "depth": 7,
+      "learning_rate": 0.14728562654282598,
+      "l2_leaf_reg": 0.017897215654403328,
+      "bagging_temperature": 0.3026047451950726,
+      "random_strength": 1.3449336957629834e-05,
+      "loss_function": "MAE",
+      "verbose": false
+    }
+  },
+  "total_features": 19
+}

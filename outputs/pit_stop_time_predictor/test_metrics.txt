@@ -1,0 +1,7 @@
+PIT STOP TIME ESTIMATOR - TEST METRICS
+============================================================
+
+R² Score:  0.1070
+RMSE:      1.6216 seconds
+MAE:       1.3397 seconds
+MSE:       2.6294
