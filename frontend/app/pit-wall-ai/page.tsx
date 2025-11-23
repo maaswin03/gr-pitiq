@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
+import LoadingScreen from '@/components/ui/loading-screen';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useBackendSimulation } from '@/hooks/useBackendSimulation';
@@ -91,7 +92,25 @@ export default function PitWallAI() {
   const [selectedModel, setSelectedModel] = useState<string>('pitiq-lightning');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const userId = user?.id || 'guest';
+  // Get user ID from localStorage (auth_token)
+  const userId = typeof window !== 'undefined' ? (localStorage.getItem('auth_token') || '') : '';
+  
+  // Redirect to login if no user
+  useEffect(() => {
+    if (!authLoading && !user?.id) {
+      // Clear localStorage before redirect
+      localStorage.removeItem('hasSession');
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('debug_userId');
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('sim_active_')) {
+          localStorage.removeItem(key);
+        }
+      });
+      router.replace('/login');
+    }
+  }, [authLoading, user, router]);
+  
   const simulationConfig = {
     driverSkill: 'Pro',
     carNumber: 22,
@@ -115,12 +134,6 @@ export default function PitWallAI() {
     simulationConfig,
     { pollInterval: 2000 }
   );
-
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.push('/auth/login');
-    }
-  }, [user, authLoading, router]);
 
   useEffect(() => {
     const fetchModels = async () => {
@@ -273,12 +286,12 @@ export default function PitWallAI() {
     setTimeout(() => sendMessage(prompt), 100);
   };
 
-  if (authLoading || !user) {
-    return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="text-zinc-400">Loading...</div>
-      </div>
-    );
+  if (authLoading) {
+    return <LoadingScreen message="Loading Pit Wall AI..." />;
+  }
+
+  if (!user) {
+    return null;
   }
 
   return (

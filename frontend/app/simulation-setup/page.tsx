@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { 
   Play, 
@@ -20,12 +21,31 @@ import { Slider } from '@/components/ui/slider';
 import { AlertDialog } from '@/components/ui/alert-dialog';
 import { useBackendSimulation, type SimulationConfig } from '@/hooks/useBackendSimulation';
 import { TRACK_DATA, type TrackName } from '@/lib/track-data';
-
+import LoadingScreen from '@/components/ui/loading-screen';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function SimulationSetupPage() {
-  const { user } = useAuth();
-  const userId = user?.id || 'guest';
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
+  
+  // Get user ID from localStorage (auth_token)
+  const userId = typeof window !== 'undefined' ? (localStorage.getItem('auth_token') || '') : '';
+  
+  // Redirect to login if no user (only after auth check completes)
+  useEffect(() => {
+    if (!authLoading && user === null) {
+      // Clear localStorage before redirect
+      localStorage.removeItem('hasSession');
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('debug_userId');
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('sim_active_')) {
+          localStorage.removeItem(key);
+        }
+      });
+      router.replace('/login');
+    }
+  }, [authLoading, user, router]);
   const [selectedTrack, setSelectedTrack] = useState<TrackName>('COTA');
   const [showStopDialog, setShowStopDialog] = useState(false);
   const [pitStopMessage, setPitStopMessage] = useState<string | null>(null);
@@ -85,6 +105,7 @@ export default function SimulationSetupPage() {
   } : null;
 
   const handleStartSimulation = async () => {
+    setPitStopMessage(null); // Clear any previous messages
     await backendStart();
   };
 
@@ -118,6 +139,17 @@ export default function SimulationSetupPage() {
     }
   };
 
+  // Auto-stop simulation when fuel depletes to 0
+  useEffect(() => {
+    if (isSimulating && simulationState && simulationState.currentFuel <= 0) {
+      backendStop();
+      setPitStopMessage("🛑 OUT OF FUEL - Simulation stopped at Lap " + simulationState.currentLap);
+    } else if (simulationState && simulationState.currentFuel > 0 && pitStopMessage?.includes('OUT OF FUEL')) {
+      // Clear out-of-fuel message when fuel is restored
+      setPitStopMessage(null);
+    }
+  }, [isSimulating, simulationState?.currentFuel, simulationState?.currentLap, pitStopMessage]);
+
   const updateConfig = async <K extends keyof SimulationConfig>(key: K, value: SimulationConfig[K]) => {
     if (isSimulating) {
       if (key === 'fuelLoad' && (!isPaused || pauseReason !== 'pit_stop')) {
@@ -130,7 +162,13 @@ export default function SimulationSetupPage() {
       }
     }
     
-    const newConfig = { ...config, [key]: value } as SimulationConfig;
+    // Preserve backend fuel during simulation when updating non-fuel fields
+    const newConfig = { 
+      ...config, 
+      [key]: value,
+      // When simulation is active and updating non-fuel field, preserve current fuel from backend
+      ...(isSimulating && key !== 'fuelLoad' && backendState ? { fuelLoad: backendState.fuel } : {})
+    } as SimulationConfig;
     
     if (key === 'simulationMode') {
       if (value === 'Single Lap') {
@@ -229,15 +267,13 @@ export default function SimulationSetupPage() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}.${ms.toString().padStart(2, '0')}`;
   };
 
+  // Show loading while checking authentication
+  if (authLoading) {
+    return <LoadingScreen message="Authenticating..." />;
+  }
+
   if (isCheckingSimulation) {
-    return (
-      <div className="h-screen w-screen bg-black text-zinc-400 font-rajdhani flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-orange-600 mx-auto mb-4"></div>
-          <p className="text-zinc-400 text-sm">Checking for active simulation...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen message="Checking for active simulation..." />;
   }
 
   return (

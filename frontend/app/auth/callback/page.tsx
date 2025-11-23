@@ -12,8 +12,6 @@ export default function CallbackPage() {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        console.log('[Callback Page] Processing OAuth callback...');
-        
         // Get the current session (Supabase will automatically handle the OAuth callback)
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
@@ -25,7 +23,6 @@ export default function CallbackPage() {
         }
 
         if (session?.user) {
-          console.log('[Callback Page] Session found, redirecting to dashboard...');
           // Redirect to dashboard - session is already in Supabase storage
           window.location.href = '/dashboard';
         } else {

@@ -259,7 +259,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                   </div>
                   <div>
                     <p className="text-xs text-zinc-400 font-semibold font-rajdhani">Active Models</p>
-                    <p className="text-lg font-black text-white font-rajdhani">7</p>
+                    <p className="text-lg font-black text-white font-rajdhani">8</p>
                   </div>
                 </div>
                 <div className="flex items-center justify-between text-xs font-rajdhani">

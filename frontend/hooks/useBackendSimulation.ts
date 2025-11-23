@@ -94,6 +94,9 @@ export function useBackendSimulation(
 ) {
   const { pollInterval = 2500, autoStart = false } = options;
   
+  // Use auth_token from localStorage as fallback if userId is empty
+  const effectiveUserId = userId || (typeof window !== 'undefined' ? localStorage.getItem('auth_token') || '' : '');
+  
   // State
   const [state, setState] = useState<SimulationState | null>(null);
   const [laps, setLaps] = useState<LapHistoryData[]>([]);
@@ -106,10 +109,29 @@ export function useBackendSimulation(
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
   
   /**
+   * Sync isActive state with localStorage
+   */
+  useEffect(() => {
+    if (effectiveUserId) {
+      if (isActive) {
+        localStorage.setItem(`sim_active_${effectiveUserId}`, 'true');
+      } else {
+        localStorage.removeItem(`sim_active_${effectiveUserId}`);
+      }
+    }
+  }, [isActive, effectiveUserId]);
+  
+  /**
    * Start simulation with user configuration
    * Sends all parameters from frontend to backend
    */
   const startSimulation = useCallback(async () => {
+    if (!effectiveUserId) {
+      setError('No user ID available');
+      console.error('❌ Cannot start simulation without user ID');
+      return;
+    }
+    
     setIsStarting(true);
     setError(null);
     
@@ -118,7 +140,7 @@ export function useBackendSimulation(
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          user_id: userId,
+          user_id: effectiveUserId,
           track: track,
           config: {
             // Driver settings
@@ -150,7 +172,6 @@ export function useBackendSimulation(
       
       if (data.success) {
         setIsActive(true);
-        console.log('✅ Simulation started:', data);
       } else {
         setError(data.error || 'Failed to start simulation');
         console.error('❌ Start failed:', data.error);
@@ -162,7 +183,7 @@ export function useBackendSimulation(
     } finally {
       setIsStarting(false);
     }
-  }, [userId, track, config]);
+  }, [effectiveUserId, track, config]);
   
   /**
    * Update simulation configuration while running
@@ -176,7 +197,7 @@ export function useBackendSimulation(
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          user_id: userId,
+          user_id: effectiveUserId,
           config: {
             // Only send provided parameters
             ...(newConfig.driverSkill && { driverSkill: newConfig.driverSkill }),
@@ -199,7 +220,6 @@ export function useBackendSimulation(
       const data = await response.json();
       
       if (data.success) {
-        console.log('✅ Configuration updated:', data.updated_params);
         return { success: true, updatedParams: data.updated_params };
       } else {
         setError(data.error || 'Failed to update configuration');
@@ -212,7 +232,7 @@ export function useBackendSimulation(
       console.error('❌ Update error:', err);
       return { success: false, error: errorMsg };
     }
-  }, [userId]);
+  }, [effectiveUserId]);
   
   /**
    * Execute manual pit stop
@@ -224,13 +244,12 @@ export function useBackendSimulation(
       const response = await fetch(`${API_BASE}/pit-stop`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: userId })
+        body: JSON.stringify({ user_id: effectiveUserId })
       });
       
       const data = await response.json();
       
       if (data.success) {
-        console.log('🏁 Pit stop completed:', data);
         return { 
           success: true, 
           pitDuration: data.pit_duration,
@@ -252,7 +271,7 @@ export function useBackendSimulation(
       console.error('❌ Pit stop error:', err);
       return { success: false, error: errorMsg };
     }
-  }, [userId]);
+  }, [effectiveUserId]);
   
   /**
    * Resume simulation after pit stop
@@ -264,13 +283,12 @@ export function useBackendSimulation(
       const response = await fetch(`${API_BASE}/resume`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: userId })
+        body: JSON.stringify({ user_id: effectiveUserId })
       });
       
       const data = await response.json();
       
       if (data.success) {
-        console.log('▶️ Simulation resumed:', data);
         return { 
           success: true, 
           resumed: data.resumed,
@@ -288,7 +306,7 @@ export function useBackendSimulation(
       console.error('❌ Resume error:', err);
       return { success: false, error: errorMsg };
     }
-  }, [userId]);
+  }, [effectiveUserId]);
   
   /**
    * Stop simulation
@@ -298,7 +316,7 @@ export function useBackendSimulation(
       const response = await fetch(`${API_BASE}/stop`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: userId })
+        body: JSON.stringify({ user_id: effectiveUserId })
       });
       
       const data = await response.json();
@@ -308,7 +326,8 @@ export function useBackendSimulation(
         // Clear state and laps to reset UI
         setState(null);
         setLaps([]);
-        console.log('✅ Simulation stopped');
+        // Clear localStorage cache
+        localStorage.removeItem(`sim_active_${effectiveUserId}`);
       } else {
         setError(data.error || 'Failed to stop simulation');
       }
@@ -317,14 +336,14 @@ export function useBackendSimulation(
       setError(errorMsg);
       console.error('❌ Stop error:', err);
     }
-  }, [userId]);
+  }, [effectiveUserId]);
   
   /**
    * Fetch current simulation state
    */
   const fetchState = useCallback(async () => {
     try {
-      const response = await fetch(`${API_BASE}/state?user_id=${userId}`);
+      const response = await fetch(`${API_BASE}/state?user_id=${effectiveUserId}`);
       const data = await response.json();
       
       if (data.success && data.data) {
@@ -338,14 +357,14 @@ export function useBackendSimulation(
     } finally {
       setLoading(false);
     }
-  }, [userId]);
+  }, [effectiveUserId]);
   
   /**
    * Fetch lap history with optional session filter
    */
   const fetchLaps = useCallback(async (limit = 50, sessionId?: string) => {
     try {
-      let url = `${API_BASE}/laps?user_id=${userId}&limit=${limit}`;
+      let url = `${API_BASE}/laps?user_id=${effectiveUserId}&limit=${limit}`;
       if (sessionId) {
         url += `&session_id=${sessionId}`;
       }
@@ -358,14 +377,14 @@ export function useBackendSimulation(
     } catch (err) {
       console.error('❌ Fetch laps error:', err);
     }
-  }, [userId]);
+  }, [effectiveUserId]);
   
   /**
    * Get simulation status
    */
   const getStatus = useCallback(async () => {
     try {
-      const response = await fetch(`${API_BASE}/status?user_id=${userId}`);
+      const response = await fetch(`${API_BASE}/status?user_id=${effectiveUserId}`);
       const data = await response.json();
       
       if (data.success) {
@@ -376,7 +395,7 @@ export function useBackendSimulation(
       console.error('❌ Get status error:', err);
       return null;
     }
-  }, [userId]);
+  }, [effectiveUserId]);
   
   /**
    * Check for existing simulation on mount
@@ -385,38 +404,70 @@ export function useBackendSimulation(
   useEffect(() => {
     const checkExistingSimulation = async () => {
       try {
+        // First check localStorage for cached active state
+        const cachedActive = localStorage.getItem(`sim_active_${effectiveUserId}`);
+        
         const status = await getStatus();
         
         // Check if user has active simulation running
         if (status && status.user_status && (status.user_status.active || status.user_status.is_running)) {
-          console.log('🔄 Resuming existing simulation:', status.user_status);
           setIsActive(true);
+          localStorage.setItem(`sim_active_${effectiveUserId}`, 'true');
           
-          // Fetch initial state first to get session_id
-          await fetchState();
+          // Retry fetching state until it's available (handles race condition)
+          let retries = 0;
+          const maxRetries = 5;
+          
+          while (retries < maxRetries) {
+            await fetchState();
+            const currentState = await new Promise<boolean>((resolve) => {
+              setTimeout(() => {
+                // Check if state was set
+                resolve(state !== null);
+              }, 100);
+            });
+            
+            if (currentState) {
+              break;
+            }
+            
+            retries++;
+            if (retries < maxRetries) {
+              await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+          }
+          
           // Note: fetchLaps will be called by polling effect with session_id
+        } else if (cachedActive === 'true') {
+          // Cached state says active but backend says no - clear cache
+          localStorage.removeItem(`sim_active_${effectiveUserId}`);
+          setIsActive(false);
         } else {
-          console.log('📭 No active simulation found');
           setIsActive(false);
         }
       } catch (err) {
         console.error('❌ Error checking simulation status:', err);
+        // Clear cache on error
+        localStorage.removeItem(`sim_active_${effectiveUserId}`);
       } finally {
         setLoading(false);
       }
     };
     
-    // Check on mount
-    checkExistingSimulation();
+    // Only check if we have a valid effectiveUserId
+    if (effectiveUserId) {
+      checkExistingSimulation();
+    } else {
+      setLoading(false);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]); // Only run once on mount when userId changes
+  }, [effectiveUserId]); // Only run once on mount when effectiveUserId changes
   
   /**
    * Fetch laps when session_id changes or becomes available
    */
   useEffect(() => {
     if (state?.session_id && isActive) {
-      console.log('📊 Fetching laps for session:', state.session_id);
       fetchLaps(50, state.session_id);
     }
   }, [state?.session_id, isActive, fetchLaps]);
@@ -455,7 +506,6 @@ export function useBackendSimulation(
     if (!isActive || !state?.session_id) return;
     
     const lapRefreshInterval = setInterval(() => {
-      console.log('🔄 Refreshing lap history for session:', state.session_id);
       fetchLaps(50, state.session_id);
     }, 5000); // Every 5 seconds
     

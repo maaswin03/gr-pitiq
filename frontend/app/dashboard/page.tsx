@@ -11,15 +11,16 @@ import StatsGrid from "@/components/dashboard/StatsGrid";
 import LiveTelemetry from "@/components/dashboard/LiveTelemetry";
 import WeatherConditions from "@/components/dashboard/WeatherConditions";
 import LapHistoryTable from "@/components/dashboard/LapHistoryTable";
-import { Loader2 } from "lucide-react";
+import LoadingScreen from "@/components/ui/loading-screen";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user } = useAuth();
-  const userId = user?.id || "guest";
+  const { user, loading: authLoading } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isValidating, setIsValidating] = useState(true);
   const [tireVariations] = useState([2, -3, 1, -2]);
+  
+  // Get user ID from localStorage (auth_token)
+  const userId = typeof window !== 'undefined' ? (localStorage.getItem('auth_token') || '') : '';
 
   const {
     state: backendState,
@@ -79,34 +80,23 @@ export default function DashboardPage() {
   const fuelUsedPerLap = 2.1;
   const fuelWarning = currentFuel < 10;
 
+  // Redirect to login if no user
   useEffect(() => {
-    const validateSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+    if (!authLoading && !user) {
+      localStorage.removeItem('hasSession');
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('debug_userId');
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('sim_active_')) {
+          localStorage.removeItem(key);
+        }
+      });
+      router.replace("/login");
+    }
+  }, [authLoading, user, router]);
 
-      if (!session?.user) {
-        console.log("[Dashboard] No valid session, redirecting to login");
-        router.replace("/login");
-        return;
-      }
-
-      console.log("[Dashboard] Session validated for user:", session.user.id);
-      setIsValidating(false);
-    };
-
-    validateSession();
-  }, [router]);
-
-  if (isValidating) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-orange-600" />
-          <p className="text-zinc-400">Loading dashboard...</p>
-        </div>
-      </div>
-    );
+  if (authLoading) {
+    return <LoadingScreen message="Loading dashboard..." />;
   }
 
   return (

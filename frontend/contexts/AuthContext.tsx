@@ -28,14 +28,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const checkSession = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        console.log('[AuthContext] Initial session check:', { hasSession: !!session, pathname });
         setUser(session?.user ?? null);
         
-        // Store session data securely (only for quick checks, not for auth decisions)
-        if (session?.user) {
+        // Store user ID as auth_token in localStorage
+        if (session?.user?.id) {
           localStorage.setItem('hasSession', 'true');
+          localStorage.setItem('auth_token', session.user.id);
+          localStorage.setItem('debug_userId', session.user.id);
         } else {
           localStorage.removeItem('hasSession');
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('debug_userId');
         }
         
         // Redirect logic based on ACTUAL session (not localStorage)
@@ -44,13 +47,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const isHomePage = pathname === '/';
         const isAuthenticated = !!session?.user;
         
+        // Only redirect on first load, not on every auth state change
         if (isAuthenticated && (isAuthPage || isHomePage)) {
           // If logged in and on auth page or home page, redirect to dashboard
-          console.log('[AuthContext] Redirecting authenticated user to dashboard');
           router.replace('/dashboard');
         } else if (!isAuthenticated && !isPublicPage && !isAuthPage && !isHomePage) {
           // If not logged in and on protected page, redirect to login
-          console.log('[AuthContext] Redirecting unauthenticated user to login');
           router.replace('/login');
         }
       } catch (error) {
@@ -65,15 +67,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('[AuthContext] Auth state changed:', event);
         setUser(session?.user ?? null);
         setLoading(false);
         
-        // Update localStorage (only for UI hints)
-        if (session?.user) {
+        // Update localStorage including auth_token
+        if (session?.user?.id) {
           localStorage.setItem('hasSession', 'true');
+          localStorage.setItem('auth_token', session.user.id);
+          localStorage.setItem('debug_userId', session.user.id);
         } else {
           localStorage.removeItem('hasSession');
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('debug_userId');
         }
         
         // Only handle SIGNED_OUT
@@ -92,7 +97,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await supabase.auth.signOut();
       setUser(null);
+      
+      // Clear all localStorage including auth_token
       localStorage.removeItem('hasSession');
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('debug_userId');
+      
+      // Clear all simulation caches
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('sim_active_')) {
+          localStorage.removeItem(key);
+        }
+      });
+      
       router.push('/');
     } catch (error) {
       console.error('Error signing out:', error);

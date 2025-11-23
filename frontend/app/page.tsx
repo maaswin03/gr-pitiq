@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Zap, ChevronRight, Flag, Trophy } from "lucide-react";
+import { Zap, ChevronRight, Flag, Trophy, LogOut, User } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
 
 const speedLines = [
   { top: 15, width: 25, duration: 1.5, delay: 0 },
@@ -28,6 +29,8 @@ const speedLines = [
 ];
 
 export default function Home() {
+  const { user, signOut } = useAuth();
+
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-zinc-800 bg-black/95 backdrop-blur-sm">
@@ -76,24 +79,52 @@ export default function Home() {
             </div>
 
             <div className="flex items-center gap-3">
-              <Link href="/login">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-4 py-2 text-sm font-bold text-zinc-300 hover:text-orange-600 transition-colors"
-                >
-                  Login
-                </motion.button>
-              </Link>
-              <Link href="/signup">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-4 py-2 text-sm font-bold bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
-                >
-                  Sign Up
-                </motion.button>
-              </Link>
+              {user ? (
+                <>
+                  <Link href="/profile">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-4 py-2 text-sm font-bold text-zinc-300 hover:text-orange-600 transition-colors flex items-center gap-2"
+                      title="Profile"
+                    >
+                      <User className="w-4 h-4" />
+                      Profile
+                    </motion.button>
+                  </Link>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={signOut}
+                    className="px-4 py-2 text-sm font-bold bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors flex items-center gap-2"
+                    title="Logout"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Logout
+                  </motion.button>
+                </>
+              ) : (
+                <>
+                  <Link href="/login">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-4 py-2 text-sm font-bold text-zinc-300 hover:text-orange-600 transition-colors"
+                    >
+                      Login
+                    </motion.button>
+                  </Link>
+                  <Link href="/signup">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-4 py-2 text-sm font-bold bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                    >
+                      Sign Up
+                    </motion.button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useBackendSimulation } from '@/hooks/useBackendSimulation';
 import Sidebar from '@/components/Sidebar';
+import LoadingScreen from '@/components/ui/loading-screen';
 import PitWallOverview from '@/components/pit-wall/PitWallOverview';
 import AlertsSystem from '@/components/pit-wall/AlertsSystem';
 import FuelProjection from '@/components/pit-wall/FuelProjection';
@@ -24,19 +25,38 @@ interface Alert {
 }
 
 export default function PitWallPage() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
-  const userId = user?.id || 'guest';
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [prevState, setPrevState] = useState<any>(null);
-
+  
+  // Get user ID from localStorage (auth_token)
+  const userId = typeof window !== 'undefined' ? (localStorage.getItem('auth_token') || '') : '';
+  
+  // Call all hooks before any conditional returns
   const {
     state: backendState,
     isActive,
     loading,
     laps: lapHistory,
-  } = useBackendSimulation(userId, 'COTA', {} as any, { pollInterval: 2000 });
+  } = useBackendSimulation(userId, 'COTA', (() => ({}))() as any, { pollInterval: 2000 });
+  
+  // Redirect to login if no user
+  useEffect(() => {
+    if (!authLoading && !user?.id) {
+      // Clear localStorage before redirect
+      localStorage.removeItem('hasSession');
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('debug_userId');
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('sim_active_')) {
+          localStorage.removeItem(key);
+        }
+      });
+      router.replace('/login');
+    }
+  }, [authLoading, user, router]);
 
   const simulationRunning = isActive;
   const currentLap = backendState?.current_lap || 0;
@@ -190,15 +210,13 @@ export default function PitWallPage() {
     window.open('/simulation-setup', '_blank');
   };
 
+  // Show loading while authenticating
+  if (authLoading) {
+    return <LoadingScreen message="Authenticating..." />;
+  }
+
   if (loading) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-orange-600" />
-          <p className="text-zinc-400 font-rajdhani">Checking simulation status...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen message="Checking simulation status..." />;
   }
 
   return (

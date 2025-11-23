@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
+import LoadingScreen from '@/components/ui/loading-screen';
 import { MODEL_METADATA, type ModelId } from '@/lib/modelMetadata';
 import { 
   Brain, 
@@ -58,12 +59,12 @@ export default function ModelInsightsPage() {
     linkElement.click();
   };
 
-  if (authLoading || !user) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-black">
-        <div className="text-zinc-400">Loading...</div>
-      </div>
-    );
+  if (authLoading) {
+    return <LoadingScreen message="Loading model insights..." />;
+  }
+
+  if (!user) {
+    return null;
   }
 
   return (

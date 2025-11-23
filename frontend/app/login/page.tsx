@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Flag, Mail, Lock, ArrowRight, Zap, Trophy, Gauge, AlertCircle } from 'lucide-react';
+import { Flag, Mail, Lock, ArrowRight, Zap, Trophy, Gauge, AlertCircle, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -50,7 +50,6 @@ function LoginContent() {
       }
 
       if (data?.user) {
-        console.log('[Login] User authenticated, redirecting...');
         // Use window.location for full page reload to sync session
         window.location.href = '/dashboard';
         // Keep loading state until redirect completes
@@ -354,9 +353,9 @@ function LoginContent() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-orange-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-orange-600" />
           <p className="text-zinc-400">Loading...</p>
         </div>
       </div>

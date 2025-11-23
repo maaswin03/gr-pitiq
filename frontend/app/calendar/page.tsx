@@ -6,6 +6,7 @@ import { Calendar, Edit2, Trash2, X, MapPin, Clock, Flag, AlertCircle, CheckCirc
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
+import LoadingScreen from '@/components/ui/loading-screen';
 import { supabase } from '@/lib/supabase';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -32,6 +33,7 @@ interface Alert {
 export default function RaceCalendar() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const userId = typeof window !== 'undefined' ? (localStorage.getItem('auth_token') || '') : '';
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [events, setEvents] = useState<RaceEvent[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -78,7 +80,7 @@ export default function RaceCalendar() {
       const { data, error } = await supabase
         .from('race_events')
         .select('*')
-        .eq('user_id', user?.id)
+        .eq('user_id', userId)
         .order('event_date', { ascending: true });
 
       if (error) throw error;
@@ -87,7 +89,7 @@ export default function RaceCalendar() {
       const message = error instanceof Error ? error.message : 'Unknown error';
       showAlert('error', `Failed to fetch events: ${message}`);
     }
-  }, [user?.id, showAlert]);
+  }, [userId, showAlert]);
 
   useEffect(() => {
     if (user) {
@@ -110,7 +112,7 @@ export default function RaceCalendar() {
       } else {
         const { error } = await supabase
           .from('race_events')
-          .insert([{ ...formData, user_id: user?.id }]);
+          .insert([{ ...formData, user_id: userId }]);
 
         if (error) throw error;
         showAlert('success', 'Event created successfully!');
@@ -221,12 +223,12 @@ export default function RaceCalendar() {
     }
   };
 
-  if (authLoading || !user) {
-    return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="text-zinc-400">Loading...</div>
-      </div>
-    );
+  if (authLoading) {
+    return <LoadingScreen message="Loading calendar..." />;
+  }
+
+  if (!user) {
+    return null;
   }
 
   // Stats calculations

@@ -17,6 +17,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
+import LoadingScreen from '@/components/ui/loading-screen';
 
 interface TeamMember {
   id: string;
@@ -39,6 +40,7 @@ interface TeamData {
 export default function TeamManagementPage() {
   const { user } = useAuth();
   const router = useRouter();
+  const userId = typeof window !== 'undefined' ? (localStorage.getItem('auth_token') || '') : '';
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [carNumber, setCarNumber] = useState<number | null>(null);
@@ -75,7 +77,7 @@ export default function TeamManagementPage() {
       const { data, error } = await supabase
         .from('users')
         .select('car_number')
-        .eq('id', user?.id)
+        .eq('id', userId)
         .single();
 
       if (error) throw error;
@@ -87,14 +89,14 @@ export default function TeamManagementPage() {
     } finally {
       setLoading(false);
     }
-  }, [user?.id]);
+  }, [userId]);
 
   const loadTeamData = useCallback(async () => {
     try {
       const { data: team, error: teamError } = await supabase
         .from('teams')
         .select('*')
-        .eq('user_id', user?.id)
+        .eq('user_id', userId)
         .eq('car_number', carNumber)
         .single();
 
@@ -117,7 +119,7 @@ export default function TeamManagementPage() {
     } catch (error) {
       console.error('Error loading team data:', error);
     }
-  }, [user?.id, carNumber]);
+  }, [userId, carNumber]);
 
   const handleSaveTeam = async () => {
     try {
@@ -138,7 +140,7 @@ export default function TeamManagementPage() {
         const { data, error } = await supabase
           .from('teams')
           .insert({
-            user_id: user?.id,
+            user_id: userId,
             car_number: carNumber,
             team_name: teamName,
             team_description: teamDescription
@@ -199,11 +201,7 @@ export default function TeamManagementPage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-zinc-400">Loading...</div>
-      </div>
-    );
+    return <LoadingScreen message="Loading team data..." />;
   }
 
   if (!carNumber) {

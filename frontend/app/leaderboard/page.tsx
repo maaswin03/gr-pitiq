@@ -6,6 +6,7 @@ import { Trophy, TrendingUp, Clock, Zap, Flag, ChevronDown, ChevronUp } from 'lu
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
+import LoadingScreen from '@/components/ui/loading-screen';
 import * as Papa from 'papaparse';
 
 interface LapData {
@@ -174,12 +175,12 @@ export default function Leaderboard() {
   const classes = ['all', ...new Set(drivers.map(d => d.class))];
   const tracks = ['all', ...new Set(drivers.map(d => d.track))];
 
-  if (authLoading || !user) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-zinc-400">Loading...</div>
-      </div>
-    );
+  if (authLoading) {
+    return <LoadingScreen message="Loading leaderboard..." />;
+  }
+
+  if (!user) {
+    return null;
   }
 
   return (

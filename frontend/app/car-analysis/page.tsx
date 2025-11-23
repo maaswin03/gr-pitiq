@@ -65,6 +65,7 @@ interface CarTrackData extends CarData {
 export default function CarAnalysisPage() {
   const { user } = useAuth();
   const router = useRouter();
+  const userId = typeof window !== 'undefined' ? (localStorage.getItem('auth_token') || '') : '';
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [carNumber, setCarNumber] = useState<number | null>(null);
@@ -113,7 +114,7 @@ export default function CarAnalysisPage() {
       const { data, error } = await supabase
         .from('users')
         .select('car_number')
-        .eq('id', user?.id)
+        .eq('id', userId)
         .single();
 
       if (error) throw error;

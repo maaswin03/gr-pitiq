@@ -60,7 +60,6 @@ export default function SignupPage() {
       }
 
       if (data?.user) {
-        console.log('[Signup] User registered, redirecting...');
         setSuccess(true);
         // Use window.location for full page reload to sync session
         window.location.href = '/dashboard';

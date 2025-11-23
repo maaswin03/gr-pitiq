@@ -6,6 +6,7 @@ import { User, Mail, Car, Save, Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import Sidebar from '@/components/Sidebar';
+import LoadingScreen from '@/components/ui/loading-screen';
 import {
   Select,
   SelectContent,
@@ -21,6 +22,7 @@ const CAR_NUMBERS = [
 
 export default function ProfilePage() {
   const { user } = useAuth();
+  const userId = typeof window !== 'undefined' ? (localStorage.getItem('auth_token') || '') : '';
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -45,7 +47,7 @@ export default function ProfilePage() {
       const { data, error } = await supabase
         .from('users')
         .select('full_name, email, car_number')
-        .eq('id', user?.id)
+        .eq('id', userId)
         .single();
 
       if (error) throw error;
@@ -105,11 +107,7 @@ export default function ProfilePage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-orange-600" />
-      </div>
-    );
+    return <LoadingScreen message="Loading profile..." />;
   }
 
   return (

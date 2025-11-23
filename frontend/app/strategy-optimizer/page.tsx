@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Sidebar from "@/components/Sidebar";
+import LoadingScreen from "@/components/ui/loading-screen";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 import {
   Calculator,
   Zap,
@@ -56,6 +59,8 @@ interface TrackData {
 type TrackName = 'COTA' | 'VIR' | 'Sebring' | 'Sonoma' | 'Road America' | 'Barber';
 
 export default function StrategyOptimizer() {
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [optimizing, setOptimizing] = useState(false);
   const [result, setResult] = useState<OptimizationResult | null>(null);
@@ -326,6 +331,17 @@ Be direct, technical, and actionable. Focus on the most critical strategic decis
       }
     }, 800);
   };
+
+  // Redirect to login if no user
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace('/login');
+    }
+  }, [authLoading, user, router]);
+
+  if (authLoading) {
+    return <LoadingScreen message="Loading strategy optimizer..." />;
+  }
 
   return (
     <div className="min-h-screen bg-black text-zinc-400 font-rajdhani">
